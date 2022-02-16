@@ -1,38 +1,31 @@
-Role Name
+Kibana
 =========
 
-A brief description of the role goes here.
+Эта роль устанавливает Kibana на указанные в Inventory хосты.
 
-Requirements
+Зависимости
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Перед установкой Kibana требуется установить Elasticsearch, т.к. в шаблоне настройки сервиса прописывается IP хоста где установлен Elasticsearch
 
-Role Variables
+Настройка значений переменных
 --------------
+В файле default/main.yml указывается версия Kibana (kibana_version) а также прописывается тип установки kibana_install_type. Этой переменной регулируется нужно ли скачивать дистрибутив. Если да, то нужно указать remote, если нет, то другое значение, но при этом нужно будет скачать файл в каталог /files.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+В основном плейбуке хосты Elasticserach должны быть в группе с названием el-instance или нужно будет изменить шаблон в /templates/kibana.yml.j2
 
-Dependencies
-------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-Example Playbook
+Пример Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+    - name: Install Kibana
+      hosts: kibana
+        roles:
+        - kibana_role
 
 License
 -------
 
 BSD
 
-Author Information
-------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
