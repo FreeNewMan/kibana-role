@@ -1,0 +1,33 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: centos7
+    image: docker.io/pycontribs/centos:7
+    pre_build_image: true
+    published_ports: 
+      - 9200:9200
+      - 5601:5601
+    command: /sbin/init
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+#   - name: ubuntu
+#     image: mpaivabarbosa/molecule-systemd-ubuntu
+#     pre_build_image: true
+#     published_ports: 
+#       - 9200:9200
+#       - 5601:5601
+#     tmpfs:
+#       - /run
+#       - /tmp   
+#     volumes:
+#       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+#     privileged: true
+#     override_command: false        
+provisioner:
+  name: ansible
+verifier:
+  name: ansible

@@ -1,0 +1,38 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Restart elasticsearch
+    #command: echo 'ES_JAVA_OPTS="-Djna.tmpdir=/var/lib/elasticsearch/tmp"' >> /etc/default/elasticsearch && systemctl restart elasticsearch
+    command: systemctl restart elasticsearch
+    retries: 10
+    delay: 3
+    register: result
+    until: result.rc == 0
+  - name: Restart kibana
+    command: systemctl restart kibana
+    retries: 10
+    delay: 3
+    register: result1
+    until: result1.rc == 0    
+  - name: Get Kibana status page
+    uri:
+      #url: "http://{{ansible_facts['default_ipv4']['address']}}:5601/status"
+      url: "http://localhost:5601/status"
+      follow_redirects: none
+      method: GET
+      return_content: yes
+    register: result2
+    until: result2.status == 200
+    retries: 720 # 720 * 5 seconds = 1hour (60*60/5)
+    delay: 5 # Every 5 seconds
+  - name: Show result
+    ansible.builtin.debug:
+      var: result2
+  - name: check result text/html
+    assert:
+      that:
+        - result2.status == 200
